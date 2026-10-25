@@ -1,0 +1,21 @@
+{
+  "id": "./",
+  "name": "CIKGU AI JUNIOR PPKI V.1",
+  "short_name": "Cikgu Junior",
+  "description": "Belajar Mengikut Kemampuan • Faham Langkah Demi Langkah • Yakin Berdikari",
+  "lang": "ms-MY",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "orientation": "any",
+  "background_color": "#f6f8fb",
+  "theme_color": "#426de0",
+  "categories": ["education", "kids"],
+  "icons": [
+    { "src": "./assets/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "./assets/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "./assets/icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

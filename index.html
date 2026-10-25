@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="ms-MY">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f7f9fc">
+  <meta name="description" content="CIKGU AI JUNIOR PPKI V.1 — pembelajaran langkah demi langkah untuk murid pendidikan khas. Boleh digunakan tanpa AI dan secara luar talian selepas disimpan.">
+  <meta name="color-scheme" content="light">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' https: http://localhost:* http://127.0.0.1:*; worker-src 'self'; manifest-src 'self'; media-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <title>CIKGU AI JUNIOR PPKI V.1</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./assets/icons/icon-192.png" type="image/png">
+  <link rel="apple-touch-icon" href="./assets/icons/icon-192.png">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Terus ke kandungan</a>
+
+  <div id="splash" class="splash" aria-label="CIKGU AI JUNIOR PPKI V.1 sedang dibuka">
+    <div class="splash-logo" aria-hidden="true">
+      <svg viewBox="0 0 120 120" role="img">
+        <path fill="#ffd66b" d="M18 27c0-8 7-14 15-14h54c8 0 15 6 15 14v48c0 8-7 14-15 14H62L43 105l3-16H33c-8 0-15-6-15-14V27Z"/>
+        <circle cx="43" cy="48" r="16" fill="#fff"/><circle cx="77" cy="48" r="16" fill="#fff"/>
+        <circle cx="43" cy="48" r="7" fill="#203b5a"/><circle cx="77" cy="48" r="7" fill="#203b5a"/>
+        <path fill="#f29a55" d="m60 51 9 9H51l9-9Z"/>
+        <path d="M43 72c10 8 24 8 34 0" fill="none" stroke="#203b5a" stroke-width="5" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="splash-title">CIKGU AI <span>JUNIOR</span></div>
+    <div class="splash-ppki">PPKI V.1</div>
+    <p>Belajar satu langkah pada satu masa.</p>
+    <div class="loading-dots" aria-hidden="true"><i></i><i></i><i></i></div>
+  </div>
+
+  <div id="app" class="app" hidden>
+    <header class="topbar">
+      <button class="brand" data-action="go-mode" aria-label="Ke pilihan mod">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 64 64"><path fill="currentColor" d="M7 12c0-4 3-7 7-7h36c4 0 7 3 7 7v29c0 4-3 7-7 7H32L19 59l2-11h-7c-4 0-7-3-7-7V12Z"/><circle cx="23" cy="25" r="9" fill="white"/><circle cx="42" cy="25" r="9" fill="white"/><circle cx="23" cy="25" r="4" fill="#203b5a"/><circle cx="42" cy="25" r="4" fill="#203b5a"/><path fill="#f29a55" d="m32 27 6 6H26l6-6Z"/></svg>
+        </span>
+        <span class="brand-text"><strong>CIKGU AI <em>JUNIOR</em></strong><small>PPKI V.1</small></span>
+      </button>
+      <div class="topbar-actions">
+        <span id="connection-badge" class="status-pill" title="Status sambungan"><span class="status-dot"></span><span>Dalam talian</span></span>
+        <button id="install-button" class="icon-button install-button" data-action="install" hidden aria-label="Pasang aplikasi"><span aria-hidden="true">⇩</span><span>Pasang</span></button>
+        <button id="mode-button" class="mode-button" data-action="go-mode"><span aria-hidden="true">👧</span><span>Mod Murid</span><span aria-hidden="true">⌄</span></button>
+      </div>
+    </header>
+
+    <div id="student-shell" class="student-shell" hidden>
+      <aside class="sidebar" aria-label="Navigasi utama">
+        <div class="side-welcome"><span class="mini-sun" aria-hidden="true">☀</span><div><small>Selamat belajar!</small><strong>Kamu pasti boleh.</strong></div></div>
+        <nav class="side-nav">
+          <button data-nav="subjects" class="nav-item"><span aria-hidden="true">⌂</span><span>Utama</span></button>
+          <button data-nav="chat" class="nav-item"><span aria-hidden="true">💬</span><span>Cikgu AI</span><span class="nav-new">Panduan</span></button>
+          <button data-nav="games" class="nav-item"><span aria-hidden="true">🧩</span><span>Permainan</span></button>
+          <button data-nav="progress" class="nav-item"><span aria-hidden="true">📈</span><span>Kemajuan</span></button>
+        </nav>
+        <div class="side-bottom">
+          <div class="offline-mini"><span aria-hidden="true">📚</span><p><strong>Sedia tanpa internet</strong><br><small>Nota & latihan prasedia</small></p></div>
+          <button class="nav-item" data-action="student-settings"><span aria-hidden="true">⚙</span><span>Tetapan Paparan</span></button>
+        </div>
+      </aside>
+      <main id="main" class="main" tabindex="-1"></main>
+      <nav class="mobile-nav" aria-label="Navigasi mudah alih">
+        <button data-nav="subjects"><span aria-hidden="true">⌂</span><small>Utama</small></button>
+        <button data-nav="chat"><span aria-hidden="true">💬</span><small>Cikgu AI</small></button>
+        <button data-nav="games"><span aria-hidden="true">🧩</span><small>Main</small></button>
+        <button data-nav="progress"><span aria-hidden="true">📈</span><small>Maju</small></button>
+      </nav>
+    </div>
+
+    <main id="full-main" class="full-main" tabindex="-1"></main>
+  </div>
+
+  <dialog id="modal" class="modal" aria-labelledby="modal-title">
+    <div id="modal-content"></div>
+  </dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+  <div id="announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+  <noscript><div class="noscript">Aplikasi ini memerlukan JavaScript untuk latihan interaktif. Sila aktifkan JavaScript.</div></noscript>
+  <script src="./js/offline-audio-manifest.js"></script>
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>
