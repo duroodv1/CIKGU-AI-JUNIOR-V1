@@ -1,5 +1,5 @@
 /* Kandungan prasedia CIKGU AI JUNIOR PPKI V.1 — boleh digunakan tanpa internet. */
-export const APP_VERSION = '1.0.0';
+export const APP_VERSION = '1.0.2';
 
 const q = (prompt, options, answer, hint, steps, check, visual = '') => ({
   prompt, options, answer, hint, steps, check, visual
@@ -421,11 +421,11 @@ export const SUBJECTS = [
         ex('Air minum diutamakan sebelum gula-gula apabila wang terhad.', 'Perlu: 💧🍚🏠  Hendak: 🍭🎮'),
         q('Manakah keperluan asas?', ['Air minum', 'Gula-gula', 'Mainan baharu'], 0, 'Badan kita memerlukan air.', ['Keperluan membantu kesihatan dan kehidupan asas.', 'Air diperlukan oleh badan.', 'Gula-gula dan mainan boleh ditangguhkan.'], 'Semak: keperluan didahulukan apabila wang terhad.', '💧 perlu'),
         q('Kamu sudah mempunyai beg sekolah yang baik tetapi mahu beg baharu kerana warna lain. Ini ialah…', ['kehendak', 'keperluan segera', 'bil rumah'], 0, 'Beg lama masih boleh digunakan.', ['Beg lama masih memenuhi fungsi.', 'Beg baharu diingini kerana warna.', 'Ini kehendak dan boleh ditangguhkan.'], 'Semak: keperluan berubah jika beg lama rosak dan tiada pengganti.', '🎒')),
-      t('simpan', 'Menyimpan wang', '🐷', 'Menyimpan bermaksud menyisihkan sebahagian wang untuk kegunaan kemudian.',
+      t('simpan', 'Menyimpan wang', '🪙', 'Menyimpan bermaksud menyisihkan sebahagian wang untuk kegunaan kemudian.',
         ['Simpan sedikit secara konsisten.', 'Asingkan simpanan sebelum berbelanja.', 'Rekod jumlah dengan bantuan ibu bapa jika perlu.'],
         ex('Daripada RM5 wang saku, simpan RM1. Belanja tersedia RM4.', 'RM5 → simpan RM1 + belanja RM4'),
-        q('Kamu menerima RM5 dan mahu menyimpan RM1. Berapa wang untuk dibelanjakan?', ['RM4', 'RM5', 'RM6'], 0, 'Asingkan RM1 daripada RM5.', ['Wang asal RM5.', 'Simpanan RM1 dikeluarkan daripada belanja.', 'RM5 − RM1 = RM4.'], 'Semak: RM4 belanja + RM1 simpanan = RM5.', '🐷RM1 + RM4'),
-        q('Apakah tabiat simpanan yang baik?', ['Menyimpan sedikit secara tetap', 'Membelanjakan semua setiap hari', 'Berhutang untuk mainan'], 0, 'Simpanan kecil boleh terkumpul.', ['Simpanan tidak semestinya besar.', 'Menyimpan secara tetap membantu membina tabiat.', 'Simpan mengikut kemampuan.'], 'Semak: simpanan dibuat tanpa mengabaikan keperluan.', '🐷 sedikit demi sedikit')),
+        q('Kamu menerima RM5 dan mahu menyimpan RM1. Berapa wang untuk dibelanjakan?', ['RM4', 'RM5', 'RM6'], 0, 'Asingkan RM1 daripada RM5.', ['Wang asal RM5.', 'Simpanan RM1 dikeluarkan daripada belanja.', 'RM5 − RM1 = RM4.'], 'Semak: RM4 belanja + RM1 simpanan = RM5.', '🪙 RM1 + RM4'),
+        q('Apakah tabiat simpanan yang baik?', ['Menyimpan sedikit secara tetap', 'Membelanjakan semua setiap hari', 'Berhutang untuk mainan'], 0, 'Simpanan kecil boleh terkumpul.', ['Simpanan tidak semestinya besar.', 'Menyimpan secara tetap membantu membina tabiat.', 'Simpan mengikut kemampuan.'], 'Semak: simpanan dibuat tanpa mengabaikan keperluan.', '🪙 Sedikit demi sedikit')),
       t('saku', 'Mengurus wang saku', '📒', 'Wang saku boleh diagihkan untuk keperluan, simpanan dan pilihan kecil.',
         ['Catat wang masuk dan keluar.', 'Utamakan makanan dan keperluan sekolah.', 'Jangan berhutang untuk membeli mainan.'],
         ex('Wang saku RM6: makanan RM4, simpanan RM1, baki RM1.', 'RM6 = RM4 + RM1 + RM1'),
