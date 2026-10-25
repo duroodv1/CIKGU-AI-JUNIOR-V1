@@ -1,6 +1,6 @@
 importScripts('./js/offline-audio-manifest.js');
 
-const VERSION = 'cikgu-ppki-v1.0.9';
+const VERSION = 'cikgu-ppki-v1.1.0';
 const CACHE = `shell-${VERSION}`;
 const AUDIO_CACHE = 'cikgu-yasmin-offline-v1';
 const AUDIO_MANIFEST = self.CIKGU_OFFLINE_AUDIO || { clips: [], total: 0, bytes: 0 };
@@ -24,7 +24,7 @@ const ASSETS = [
   './js/activity-engine.js',
   './js/activity-view.js',
   './js/student-views.js',
-  './js/parent-views.js',
+  './js/settings-view.js',
   './js/game-engine.js',
   './js/game-view.js',
   './assets/icons/icon-192.png',

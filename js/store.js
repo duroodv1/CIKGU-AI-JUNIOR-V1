@@ -28,11 +28,6 @@ export const DEFAULT_STATE = {
     activityStats: {},
     last: null
   },
-  parent: {
-    pinSet: false,
-    salt: '',
-    hash: ''
-  },
   ai: {
     provider: 'none',
     baseUrl: '',
@@ -54,7 +49,7 @@ function cloneDefault() {
 function mergeState(saved) {
   const base = cloneDefault();
   if (!saved || typeof saved !== 'object') return base;
-  return {
+  const state = {
     ...base,
     ...saved,
     settings: { ...base.settings, ...(saved.settings || {}) },
@@ -66,7 +61,6 @@ function mergeState(saved) {
       activityStats: { ...base.progress.activityStats, ...(saved.progress?.activityStats || {}) },
       activity: Array.isArray(saved.progress?.activity) ? saved.progress.activity.slice(0, 100) : []
     },
-    parent: { ...base.parent, ...(saved.parent || {}) },
     ai: {
       ...base.ai,
       ...(saved.ai || {}),
@@ -75,6 +69,8 @@ function mergeState(saved) {
     },
     meta: { ...base.meta, ...(saved.meta || {}) }
   };
+  delete state.parent;
+  return state;
 }
 
 let dbPromise;
@@ -125,6 +121,7 @@ export async function loadState() {
   }
   const state = mergeState(saved);
   if (!state.meta.createdAt) state.meta.createdAt = new Date().toISOString();
+  if (saved && typeof saved === 'object' && 'parent' in saved) await saveState(state);
   return state;
 }
 
@@ -142,20 +139,6 @@ export async function saveState(state) {
   return savedToIdb;
 }
 
-export async function clearState() {
-  try {
-    const db = await openDatabase();
-    await new Promise((resolve, reject) => {
-      const transaction = db.transaction(STORE, 'readwrite');
-      transaction.objectStore(STORE).clear();
-      transaction.oncomplete = resolve;
-      transaction.onerror = () => reject(transaction.error);
-    });
-  } catch { /* tetap bersihkan sandaran */ }
-  try { localStorage.removeItem(BACKUP_KEY); } catch { /* abaikan */ }
-  return cloneDefault();
-}
-
 export async function storageEstimate() {
   if (navigator.storage?.estimate) return navigator.storage.estimate();
   return { usage: 0, quota: 0 };
@@ -164,39 +147,4 @@ export async function storageEstimate() {
 export async function requestPersistentStorage() {
   if (!navigator.storage?.persist) return false;
   return navigator.storage.persist();
-}
-
-function bytesToBase64(bytes) {
-  let binary = '';
-  bytes.forEach(byte => { binary += String.fromCharCode(byte); });
-  return btoa(binary);
-}
-
-function base64ToBytes(value) {
-  const binary = atob(value);
-  return Uint8Array.from(binary, char => char.charCodeAt(0));
-}
-
-async function derivePin(pin, saltBytes) {
-  if (!globalThis.crypto?.subtle) throw new Error('Penyimpanan PIN selamat memerlukan pelayar moden dan HTTPS atau localhost.');
-  const material = await crypto.subtle.importKey('raw', new TextEncoder().encode(pin), 'PBKDF2', false, ['deriveBits']);
-  const bits = await crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt: saltBytes, iterations: 150000 }, material, 256);
-  return new Uint8Array(bits);
-}
-
-export async function createPin(pin) {
-  if (!/^\d{6}$/.test(pin)) throw new Error('PIN mesti terdiri daripada 6 digit.');
-  const salt = crypto.getRandomValues(new Uint8Array(16));
-  const hash = await derivePin(pin, salt);
-  return { pinSet: true, salt: bytesToBase64(salt), hash: bytesToBase64(hash) };
-}
-
-export async function verifyPin(pin, parent) {
-  if (!parent?.pinSet || !parent.salt || !parent.hash) return false;
-  const actual = await derivePin(pin, base64ToBytes(parent.salt));
-  const expected = base64ToBytes(parent.hash);
-  if (actual.length !== expected.length) return false;
-  let difference = 0;
-  for (let i = 0; i < actual.length; i += 1) difference |= actual[i] ^ expected[i];
-  return difference === 0;
 }

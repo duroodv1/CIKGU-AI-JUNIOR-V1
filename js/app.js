@@ -1,21 +1,19 @@
 import { SUBJECTS, LEVELS, GAMES, findSubject, findTopic } from './content.js';
-import { loadState, saveState, clearState, createPin, verifyPin, storageEstimate, requestPersistentStorage } from './store.js';
+import { loadState, saveState, storageEstimate, requestPersistentStorage } from './store.js';
 import { makePracticeGuide, makeTopicGuide, answerLocally, askOnlineAI, testAIConnection, validateBackendUrl } from './teacher.js';
 import { getPracticeQuestions } from './question-bank.js';
 import { createTopicActivity, answerTopicActivity, retryTopicActivity, nextTopicActivity, pickActivitySequence, resetActivitySequence, checkActivitySequence, selectActivityMatch } from './activity-engine.js';
 import { markTopicOpened, markNoteRead, recordPractice, recordHelp, recordGame, recordTopicActivity } from './progress.js';
 import { createGame, getCurrentQuestion, answerChoice, nextGameRound, flipMemoryCard, resolveMemoryTurn, pickSequenceCard, checkSequence, toggleShopItem, checkoutShop } from './game-engine.js';
-import { esc, attr, mascotSvg, audioAvailable, todayKey } from './ui.js';
+import { esc, audioAvailable, todayKey } from './ui.js';
 import { renderStudent } from './student-views.js';
-import { renderParent, renderParentAuth } from './parent-views.js';
+import { renderSettings } from './settings-view.js';
 import { samplePlayer, audioStatusText } from './audio.js';
 import { noteSpeechSegments, questionSpeechSegments, guideSpeechSegments, speechTextFromSegments } from './speech-content.js';
 
 const $ = selector => document.querySelector(selector);
 const app = $('#app');
 const main = $('#main');
-const fullMain = $('#full-main');
-const studentShell = $('#student-shell');
 const modal = $('#modal');
 const modalContent = $('#modal-content');
 let state;
@@ -36,8 +34,7 @@ const initialChat = () => ({
 });
 
 const ui = {
-  mode: 'mode',
-  view: 'mode',
+  view: 'subjects',
   subjectId: null,
   topicId: null,
   level: 1,
@@ -49,10 +46,6 @@ const ui = {
   chat: null,
   game: null,
   activity: null,
-  parentTab: 'overview',
-  parentAuth: 'login',
-  parentAuthenticated: false,
-  reportSubject: 'all',
   offlineReady: false,
   offlineStatus: '',
   audioOfflineReady: false,
@@ -105,19 +98,11 @@ function modalShell(title, body, icon = '') {
   return `<div class="modal-body"><div class="modal-head"><div>${icon ? `<div class="modal-icon" aria-hidden="true">${icon}</div>` : ''}<h2 id="modal-title">${esc(title)}</h2></div><button class="modal-close" data-action="close-modal" aria-label="Tutup">×</button></div>${body}</div>`;
 }
 
-function renderMode() {
-  fullMain.innerHTML = `<div class="mode-page"><div class="mode-intro"><div class="mascot-welcome">${mascotSvg()}</div><div class="eyebrow">Ruang belajar mesra PPKI · 9–11 tahun</div><h1>Belajar ikut kemampuan.<br>Faham langkah demi langkah.</h1><p>Belajar Mengikut Kemampuan • Faham Langkah Demi Langkah • Yakin Berdikari</p></div><div class="mode-grid"><button class="mode-card student" data-action="choose-student"><span class="mode-decoration" aria-hidden="true">📚</span><span class="mode-icon" aria-hidden="true">👧</span><h2>Saya Murid</h2><p>Pilih subjek, baca nota bergambar, tanya Cikgu AI, buat latihan dan bermain.</p><span class="mode-cta">Mula Belajar <span aria-hidden="true">→</span></span></button><button class="mode-card parent" data-action="choose-parent"><span class="mode-decoration" aria-hidden="true">📈</span><span class="mode-icon" aria-hidden="true">👨‍👩‍👧</span><h2>Saya Ibu Bapa</h2><p>Lihat kemajuan anak dan urus tetapan audio, visual, AI, luar talian serta privasi.</p><span class="mode-cta">Buka Ruang Ibu Bapa <span aria-hidden="true">→</span></span></button></div><div class="mode-footer"><span aria-hidden="true">🔒</span><span>Data kemajuan disimpan pada peranti ini · Kandungan teras boleh digunakan tanpa AI</span></div></div>`;
-}
-
 function updateChrome() {
   const online = navigator.onLine;
   const badge = $('#connection-badge');
   badge.classList.toggle('offline', !online);
   badge.querySelector('span:last-child').textContent = online ? 'Dalam talian' : 'Luar talian · kandungan disimpan';
-  const modeButton = $('#mode-button');
-  if (ui.mode === 'student') modeButton.innerHTML = '<span aria-hidden="true">👧</span><span>Mod Murid</span><span aria-hidden="true">⌄</span>';
-  else if (ui.mode === 'parent') modeButton.innerHTML = '<span aria-hidden="true">👨‍👩‍👧</span><span>Mod Ibu Bapa</span><span aria-hidden="true">⌄</span>';
-  else modeButton.innerHTML = '<span aria-hidden="true">🏠</span><span>Pilih Mod</span><span aria-hidden="true">⌄</span>';
   document.querySelectorAll('[data-nav]').forEach(button => {
     const nav = button.dataset.nav;
     const active = (nav === 'subjects' && ['subjects', 'subject', 'lesson'].includes(ui.view)) || nav === ui.view || (nav === 'games' && ui.view === 'game');
@@ -130,21 +115,12 @@ function render({ focus = false } = {}) {
   if (!state) return;
   applyPreferences();
   app.hidden = false;
-  const student = ui.mode === 'student';
-  studentShell.hidden = !student;
-  fullMain.hidden = student;
-  if (student) {
-    main.innerHTML = renderStudent(state, ui);
-  } else if (ui.mode === 'parent') {
-    fullMain.innerHTML = ui.parentAuthenticated ? renderParent(state, ui) : renderParentAuth(state, ui.parentAuth);
-  } else {
-    renderMode();
-  }
+  main.innerHTML = ui.view === 'settings' ? renderSettings(state, ui) : renderStudent(state, ui);
   updateChrome();
   syncAudioControls();
   if (focus) requestAnimationFrame(() => {
     window.scrollTo({ top: 0, behavior: state.settings.reduceMotion ? 'auto' : 'smooth' });
-    (student ? main : fullMain).focus({ preventScroll: true });
+    main.focus({ preventScroll: true });
   });
 }
 
@@ -171,7 +147,6 @@ function openLesson(subjectId, topicId, tab = 'notes') {
   const subject = findSubject(subjectId);
   const topic = findTopic(subjectId, topicId);
   if (!subject || !topic) return;
-  ui.mode = 'student';
   ui.subjectId = subjectId;
   ui.topicId = topicId;
   ui.lessonTab = tab;
@@ -190,7 +165,6 @@ function openLesson(subjectId, topicId, tab = 'notes') {
 function startSubjectPractice(subjectId) {
   const subject = findSubject(subjectId);
   if (!subject || !getPracticeQuestions({ subjectId, scope: 'subject' }).length) return;
-  ui.mode = 'student';
   ui.subjectId = subjectId;
   ui.practiceScope = 'subject';
   ui.practice = freshPractice(0);
@@ -294,11 +268,6 @@ async function playAudio(target) {
   }
 }
 
-function studentSettingsModal() {
-  const toggle = (key, title, description) => `<div class="switch-row"><div><label id="student-${key}">${title}</label><p>${description}</p></div><button class="switch" role="switch" aria-checked="${state.settings[key]}" aria-labelledby="student-${key}" data-action="toggle-setting" data-setting="${key}"></button></div>`;
-  openModal(modalShell('Tetapan Paparan & Audio', `${toggle('voice', 'Bacaan suara dwibahasa', 'BM menggunakan ms-MY-YasminNeural dan English menggunakan en-US-AriaNeural. Audio prasedia menggunakan peket tempatan; teks baharu memerlukan internet.')}${toggle('sound', 'Bunyi lembut', 'Bunyi maklum balas selepas jawapan.')}${toggle('calm', 'Mod tenang', 'Warna lebih lembut dan bunyi dimatikan.')}${toggle('reduceMotion', 'Kurangkan animasi', 'Hadkan pergerakan pada skrin.')}<div class="field" style="margin-top:18px"><label for="student-font">Saiz teks</label><select id="student-font" class="select" data-change="font"><option value="normal" ${state.settings.font === 'normal' ? 'selected' : ''}>Biasa</option><option value="large" ${state.settings.font === 'large' ? 'selected' : ''}>Besar</option><option value="larger" ${state.settings.font === 'larger' ? 'selected' : ''}>Lebih besar</option></select></div><div class="modal-actions"><button class="btn btn-primary" data-action="close-modal">Selesai</button></div>`, '⚙️'));
-}
-
 function aiIsUsable() {
   if (state.ai.provider === 'none' || !state.ai.consent || !navigator.onLine) return false;
   const test = state.ai.tests[state.ai.provider];
@@ -310,7 +279,7 @@ function aiIsUsable() {
 function aiFallbackReason() {
   if (state.ai.provider === 'none') return '';
   if (!navigator.onLine) return 'Cikgu AI dalam talian tidak tersedia buat sementara waktu. Kamu masih boleh belajar menggunakan nota, contoh dan latihan yang disimpan dalam aplikasi.';
-  if (!state.ai.consent) return 'Persetujuan AI belum diberikan oleh ibu bapa. Panduan prasedia pada peranti digunakan.';
+  if (!state.ai.consent) return 'Persetujuan AI belum diberikan dalam Tetapan. Panduan prasedia pada peranti digunakan.';
   if (state.ai.tests[state.ai.provider]?.baseUrl !== state.ai.baseUrl) return 'Penyedia AI belum berjaya diuji untuk backend ini. Panduan prasedia digunakan.';
   const used = state.ai.usage.date === todayKey() ? state.ai.usage.count : 0;
   if (used >= state.ai.dailyLimit) return 'Had penggunaan AI hari ini telah dicapai. Panggilan AI dihentikan dan kandungan prasedia digunakan.';
@@ -441,7 +410,7 @@ async function downloadOfflineAudio() {
     const status = await serviceWorkerRequest('DOWNLOAD_AUDIO', 0);
     applyAudioOfflineStatus(status);
     toast('Peket audio luar talian lengkap dan telah disahkan.');
-    if (ui.mode === 'parent' && ui.parentTab === 'settings') render();
+    if (ui.view === 'settings') render();
   } catch (error) {
     ui.audioOfflineDownloading = false;
     ui.audioOfflineStatus = `Muat turun berhenti: ${error.message} Klip yang sudah disimpan akan dikekalkan; tekan butang untuk menyambung.`;
@@ -455,7 +424,7 @@ async function checkOfflineCache() {
     ui.offlineReady = true;
     ui.offlineStatus = 'Aplikasi desktop membaca fail setempat; kandungan teras dan peket audio prasedia tidak memerlukan internet.';
     await checkAudioOfflineCache();
-    if (ui.mode === 'parent') render();
+    if (ui.view === 'settings') render();
     return;
   }
   if (!('caches' in window)) {
@@ -473,7 +442,7 @@ async function checkOfflineCache() {
     }
   }
   await checkAudioOfflineCache();
-  if (ui.mode === 'parent') render();
+  if (ui.view === 'settings') render();
 }
 
 async function refreshStorage() {
@@ -483,23 +452,11 @@ async function refreshStorage() {
     const quota = estimate.quota ? Math.round(estimate.quota / 1024 / 1024) : 0;
     ui.storageText = `Anggaran penggunaan storan: ${used} MB${quota ? ` daripada kira-kira ${quota} MB yang tersedia untuk pelayar ini` : ''}.`;
   } catch { ui.storageText = 'Anggaran storan tidak tersedia dalam pelayar ini.'; }
-  if (ui.mode === 'parent' && ui.parentAuthenticated) render();
+  if (ui.view === 'settings') render();
 }
 
 async function handleAction(action, data, element) {
   switch (action) {
-    case 'go-mode':
-      samplePlayer.stop();
-      ui.parentAuthenticated = false;
-      ui.mode = 'mode'; ui.view = 'mode'; ui.game = null; ui.activity = null;
-      closeModal(); navigate('mode'); break;
-    case 'choose-student':
-      ui.mode = 'student'; ui.view = 'subjects';
-      if (!ui.chat) ui.chat = initialChat();
-      navigate('subjects'); break;
-    case 'choose-parent':
-      ui.mode = 'parent'; ui.parentAuth = state.parent.pinSet ? 'login' : 'setup';
-      ui.view = 'parent'; navigate('parent'); break;
     case 'home': navigate('subjects'); break;
     case 'open-subject':
       ui.subjectId = data.id; ui.practiceScope = 'topic'; ui.view = 'subject'; ui.guide = null; navigate('subject'); break;
@@ -592,7 +549,6 @@ async function handleAction(action, data, element) {
       }
       break;
     }
-    case 'student-settings': studentSettingsModal(); break;
     case 'close-modal': closeModal(); break;
     case 'chat-suggestion': {
       const input = $('#chat-question'); if (input) { input.value = data.text; input.focus(); } break;
@@ -667,12 +623,6 @@ async function handleAction(action, data, element) {
     }
     case 'checkout-shop': checkoutShop(ui.game); render(); break;
     case 'review-topic': openLesson(data.subject, data.topic, 'review'); break;
-    case 'parent-lock': ui.parentAuthenticated = false; ui.mode = 'mode'; navigate('mode'); break;
-    case 'parent-tab':
-      ui.parentTab = data.tab; ui.aiMessage = ''; navigate('parent');
-      if (data.tab === 'settings') { checkOfflineCache(); refreshStorage(); }
-      if (data.tab === 'privacy') refreshStorage();
-      break;
     case 'toggle-setting':
       state.settings[data.setting] = !state.settings[data.setting];
       element.setAttribute('aria-checked', String(state.settings[data.setting]));
@@ -729,28 +679,10 @@ async function handleAction(action, data, element) {
       break;
     case 'download-audio': await downloadOfflineAudio(); break;
     case 'persist-storage': {
-      try { const granted = await requestPersistentStorage(); toast(granted ? 'Storan berterusan dibenarkan oleh pelayar.' : 'Pelayar tidak memberikan storan berterusan. Eksport data secara berkala.'); }
+      try { const granted = await requestPersistentStorage(); toast(granted ? 'Storan berterusan dibenarkan oleh pelayar.' : 'Pelayar tidak memberikan storan berterusan. Elakkan mengosongkan data laman ini.'); }
       catch { toast('Permintaan storan tidak disokong dalam pelayar ini.'); } break;
     }
     case 'refresh-storage': await refreshStorage(); break;
-    case 'change-pin':
-      openModal(modalShell('Tukar PIN Ibu Bapa', `<form id="change-pin-form"><div class="field"><label for="old-pin">PIN semasa</label><input id="old-pin" name="oldPin" class="input pin-input" type="password" inputmode="numeric" minlength="6" maxlength="6" required></div><div class="field"><label for="new-pin">PIN baharu (6 digit)</label><input id="new-pin" name="newPin" class="input pin-input" type="password" inputmode="numeric" pattern="[0-9]{6}" minlength="6" maxlength="6" required></div><div class="field"><label for="new-pin-confirm">Ulang PIN baharu</label><input id="new-pin-confirm" name="confirm" class="input pin-input" type="password" inputmode="numeric" minlength="6" maxlength="6" required></div><p class="auth-error" id="pin-change-error" role="alert"></p><div class="modal-actions"><button type="button" class="btn btn-secondary" data-action="close-modal">Batal</button><button class="btn btn-primary" type="submit">Simpan PIN Baharu</button></div></form>`, '🔐'));
-      break;
-    case 'export-data': {
-      const exportState = {
-        application: 'CIKGU AI JUNIOR PPKI V.1', exportedAt: new Date().toISOString(),
-        progress: state.progress, settings: state.settings,
-        ai: { provider: state.ai.provider, baseUrl: state.ai.baseUrl, dailyLimit: state.ai.dailyLimit, consent: state.ai.consent },
-        note: 'Hash dan salt PIN tidak dieksport. Tiada API key disimpan dalam aplikasi.'
-      };
-      const blob = new Blob([JSON.stringify(exportState, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob); const link = document.createElement('a');
-      link.href = url; link.download = `cikgu-ppki-kemajuan-${todayKey()}.json`; link.click();
-      setTimeout(() => URL.revokeObjectURL(url), 1000); toast('Fail eksport disediakan. Simpan di tempat yang selamat.'); break;
-    }
-    case 'delete-data':
-      openModal(modalShell('Padam Semua Data Tempatan?', `<div class="notice danger"><span>⚠️</span><p>Tindakan ini tidak boleh diundur. Semua kemajuan, tetapan, PIN dan konfigurasi AI pada peranti ini akan dipadam.</p></div><form id="delete-data-form" style="margin-top:18px"><div class="field"><label for="delete-pin">Sahkan PIN ibu bapa</label><input id="delete-pin" name="pin" class="input pin-input" type="password" inputmode="numeric" minlength="6" maxlength="6" required></div><div class="field"><label for="delete-confirm">Taip <strong>PADAM</strong> untuk mengesahkan</label><input id="delete-confirm" name="confirmation" class="input" type="text" autocomplete="off" pattern="PADAM" required></div><p class="auth-error" id="delete-error" role="alert"></p><div class="modal-actions"><button type="button" class="btn btn-secondary" data-action="close-modal">Batal</button><button class="btn btn-danger" type="submit">Padam Data Sekarang</button></div></form>`, '🗑️'));
-      break;
     case 'install':
       if (deferredInstallPrompt) {
         deferredInstallPrompt.prompt(); await deferredInstallPrompt.userChoice;
@@ -767,25 +699,6 @@ async function handleSubmit(event) {
   event.preventDefault();
   if (form.id === 'chat-form') return handleChatSubmit(form);
   const data = new FormData(form);
-  if (form.id === 'parent-setup-form') {
-    const pin = String(data.get('pin')); const confirm = String(data.get('confirm'));
-    const error = $('#auth-error');
-    if (pin !== confirm) { error.textContent = 'PIN tidak sama. Sila ulang semula.'; return; }
-    try {
-      const button = form.querySelector('button[type="submit"]'); button.disabled = true;
-      state.parent = await createPin(pin); await commit();
-      ui.parentAuthenticated = true; ui.parentTab = 'overview'; render({ focus: true });
-      toast('PIN ibu bapa berjaya dicipta.');
-    } catch (exception) { error.textContent = exception.message; form.querySelector('button[type="submit"]').disabled = false; }
-  }
-  if (form.id === 'parent-login-form') {
-    const button = form.querySelector('button[type="submit"]'); button.disabled = true;
-    try {
-      const valid = await verifyPin(String(data.get('pin')), state.parent);
-      if (valid) { ui.parentAuthenticated = true; ui.parentTab = 'overview'; render({ focus: true }); }
-      else { $('#auth-error').textContent = 'PIN tidak betul. Cuba sekali lagi.'; button.disabled = false; form.reset(); }
-    } catch (exception) { $('#auth-error').textContent = exception.message; button.disabled = false; }
-  }
   if (form.id === 'ai-settings-form') {
     try {
       const provider = state.ai.provider;
@@ -798,24 +711,6 @@ async function handleSubmit(event) {
       await commit();
     } catch (error) { ui.aiMessage = error.message; ui.aiSuccess = false; render(); }
   }
-  if (form.id === 'change-pin-form') {
-    const error = $('#pin-change-error');
-    if (String(data.get('newPin')) !== String(data.get('confirm'))) { error.textContent = 'PIN baharu tidak sama.'; return; }
-    try {
-      if (!await verifyPin(String(data.get('oldPin')), state.parent)) { error.textContent = 'PIN semasa tidak betul.'; return; }
-      state.parent = await createPin(String(data.get('newPin'))); await commit(); closeModal(); toast('PIN baharu berjaya disimpan.');
-    } catch (exception) { error.textContent = exception.message; }
-  }
-  if (form.id === 'delete-data-form') {
-    const error = $('#delete-error');
-    if (String(data.get('confirmation')) !== 'PADAM') { error.textContent = 'Sila taip PADAM dengan huruf besar.'; return; }
-    try {
-      if (!await verifyPin(String(data.get('pin')), state.parent)) { error.textContent = 'PIN tidak betul. Data tidak dipadam.'; return; }
-      state = await clearState(); await commit(); closeModal();
-      ui.parentAuthenticated = false; ui.chat = null; ui.game = null; ui.mode = 'mode'; ui.view = 'mode';
-      applyPreferences(); render(); toast('Semua data tempatan telah dipadam.');
-    } catch (exception) { error.textContent = exception.message; }
-  }
 }
 
 async function handleChange(element) {
@@ -827,15 +722,18 @@ async function handleChange(element) {
     const subject = findSubject(element.value) || SUBJECTS[0]; ui.chat.subjectId = subject.id; ui.chat.topicId = subject.topics[0].id; ui.chat.guide = null; render();
   }
   if (type === 'chat-topic') { ui.chat.topicId = element.value; ui.chat.guide = null; render(); }
-  if (type === 'report-subject') { ui.reportSubject = element.value; render(); }
 }
 
 document.body.addEventListener('click', event => {
   const nav = event.target.closest('[data-nav]');
   if (nav) {
     event.preventDefault();
-    if (ui.mode !== 'student') { ui.mode = 'student'; if (!ui.chat) ui.chat = initialChat(); }
-    navigate(nav.dataset.nav); return;
+    if (!ui.chat) ui.chat = initialChat();
+    const destination = nav.dataset.nav;
+    if (destination === 'settings') ui.aiMessage = '';
+    navigate(destination);
+    if (destination === 'settings') { checkOfflineCache(); refreshStorage(); }
+    return;
   }
   const button = event.target.closest('[data-action]');
   if (!button || button.disabled) return;
@@ -850,12 +748,12 @@ modal.addEventListener('click', event => { if (event.target === modal) closeModa
 
 window.addEventListener('online', () => {
   updateChrome();
-  if (ui.mode === 'parent' && ui.parentTab === 'ai') render();
+  if (ui.view === 'settings') render();
   toast('Sambungan internet kembali. AI yang telah diuji boleh digunakan mengikut had.');
 });
 window.addEventListener('offline', () => {
   updateChrome();
-  if (ui.mode === 'parent' && ui.parentTab === 'ai') render();
+  if (ui.view === 'settings') render();
   toast('Anda di luar talian. Nota, latihan dan permainan yang telah disimpan masih boleh digunakan.');
 });
 window.addEventListener('beforeinstallprompt', event => { event.preventDefault(); deferredInstallPrompt = event; $('#install-button').hidden = false; });

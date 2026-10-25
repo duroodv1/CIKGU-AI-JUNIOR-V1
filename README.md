@@ -91,7 +91,7 @@ Selepas semua langkah bertanda hijau, URL PWA tersedia dalam deployment atau **S
 ## 5. Sediakan audio luar talian dalam PWA
 
 1. Buka PWA dalam keadaan dalam talian.
-2. Masuk **Mod Ibu Bapa → Audio, Visual & Luar Talian**.
+2. Masuk **Tetapan → Ketersediaan luar talian & storan**.
 3. Tekan **Sediakan Audio Luar Talian** dan tunggu sehingga **3,357/3,357** disahkan. Selepas kemas kini dwibahasa, ulangi muat turun walaupun peket lama pernah lengkap.
 4. Pasang PWA jika dikehendaki dan uji tanpa internet.
 

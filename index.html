@@ -34,7 +34,7 @@
 
   <div id="app" class="app" hidden>
     <header class="topbar">
-      <button class="brand" data-action="go-mode" aria-label="Ke pilihan mod">
+      <button class="brand" data-action="home" aria-label="Ke halaman utama">
         <span class="brand-mark" aria-hidden="true">
           <svg viewBox="0 0 64 64"><path fill="currentColor" d="M7 12c0-4 3-7 7-7h36c4 0 7 3 7 7v29c0 4-3 7-7 7H32L19 59l2-11h-7c-4 0-7-3-7-7V12Z"/><circle cx="23" cy="25" r="9" fill="white"/><circle cx="42" cy="25" r="9" fill="white"/><circle cx="23" cy="25" r="4" fill="#203b5a"/><circle cx="42" cy="25" r="4" fill="#203b5a"/><path fill="#f29a55" d="m32 27 6 6H26l6-6Z"/></svg>
         </span>
@@ -43,11 +43,11 @@
       <div class="topbar-actions">
         <span id="connection-badge" class="status-pill" title="Status sambungan"><span class="status-dot"></span><span>Dalam talian</span></span>
         <button id="install-button" class="icon-button install-button" data-action="install" hidden aria-label="Pasang aplikasi"><span aria-hidden="true">⇩</span><span>Pasang</span></button>
-        <button id="mode-button" class="mode-button" data-action="go-mode"><span aria-hidden="true">👧</span><span>Mod Murid</span><span aria-hidden="true">⌄</span></button>
+        <button id="settings-button" class="settings-button" data-nav="settings"><span aria-hidden="true">⚙</span><span>Tetapan</span></button>
       </div>
     </header>
 
-    <div id="student-shell" class="student-shell" hidden>
+    <div id="student-shell" class="student-shell">
       <aside class="sidebar" aria-label="Navigasi utama">
         <div class="side-welcome"><span class="mini-sun" aria-hidden="true">☀</span><div><small>Selamat belajar!</small><strong>Kamu pasti boleh.</strong></div></div>
         <nav class="side-nav">
@@ -58,7 +58,7 @@
         </nav>
         <div class="side-bottom">
           <div class="offline-mini"><span aria-hidden="true">📚</span><p><strong>Sedia tanpa internet</strong><br><small>Nota & latihan prasedia</small></p></div>
-          <button class="nav-item" data-action="student-settings"><span aria-hidden="true">⚙</span><span>Tetapan Paparan</span></button>
+          <button class="nav-item" data-nav="settings"><span aria-hidden="true">⚙</span><span>Tetapan</span></button>
         </div>
       </aside>
       <main id="main" class="main" tabindex="-1"></main>
@@ -67,10 +67,10 @@
         <button data-nav="chat"><span aria-hidden="true">💬</span><small>Cikgu AI</small></button>
         <button data-nav="games"><span aria-hidden="true">🧩</span><small>Main</small></button>
         <button data-nav="progress"><span aria-hidden="true">📈</span><small>Maju</small></button>
+        <button data-nav="settings"><span aria-hidden="true">⚙</span><small>Tetapan</small></button>
       </nav>
     </div>
 
-    <main id="full-main" class="full-main" tabindex="-1"></main>
   </div>
 
   <dialog id="modal" class="modal" aria-labelledby="modal-title">

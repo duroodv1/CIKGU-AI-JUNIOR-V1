@@ -1,5 +1,5 @@
 /* Kandungan prasedia CIKGU AI JUNIOR PPKI V.1 — boleh digunakan tanpa internet. */
-export const APP_VERSION = '1.0.4';
+export const APP_VERSION = '1.0.5';
 
 const q = (prompt, options, answer, hint, steps, check, visual = '') => ({
   prompt, options, answer, hint, steps, check, visual
