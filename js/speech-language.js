@@ -1,8 +1,8 @@
 /* Pemilihan suara dwibahasa untuk audio prasedia dan TTS dalam talian. */
 export const MALAY_LANGUAGE = 'ms-MY';
-export const ENGLISH_LANGUAGE = 'en-GB';
+export const ENGLISH_LANGUAGE = 'en-US';
 export const MALAY_VOICE = 'ms-MY-YasminNeural';
-export const ENGLISH_VOICE = 'en-GB-SoniaNeural';
+export const ENGLISH_VOICE = 'en-US-AriaNeural';
 
 // Kata fungsi diberi berat lebih tinggi. Senarai ini sengaja kecil, telus dan
 // boleh diaudit; teks yang tidak pasti kekal menggunakan suara Bahasa Melayu.

@@ -1,6 +1,6 @@
 # CIKGU AI JUNIOR PPKI V.1 — PWA + Audio Luar Talian
 
-Pakej ini mengandungi aplikasi web statik, **3,357 klip MP3 prajana (mono, 24 kbps)** menggunakan `ms-MY-YasminNeural` untuk Bahasa Melayu dan `en-GB-SoniaNeural` untuk English, serta pelayan Python pilihan untuk menjana audio bagi teks baharu. Tiada API key disertakan.
+Pakej ini mengandungi aplikasi web statik, **3,357 klip MP3 prajana (mono, 24 kbps)** menggunakan `ms-MY-YasminNeural` untuk Bahasa Melayu dan `en-US-AriaNeural` untuk English, serta pelayan Python pilihan untuk menjana audio bagi teks baharu. Tiada API key disertakan.
 
 Kandungan merangkumi **7 subjek, 78 topik, 700 soalan dan 1,170 aktiviti**. Kemajuan disimpan pada peranti.
 
@@ -51,7 +51,7 @@ Selepas peket lengkap disimpan:
 
 ## Bacaan suara dan privasi
 
-- Bahasa Melayu: **`ms-MY-YasminNeural`**; English (British): **`en-GB-SoniaNeural`**; kadar `-8%`. Suara dipilih mengikut bahasa setiap segmen, termasuk ayat campuran.
+- Bahasa Melayu: **`ms-MY-YasminNeural`**; English (Amerika Syarikat): **`en-US-AriaNeural`**; kadar `-8%`. Suara dipilih mengikut bahasa setiap segmen, termasuk ayat campuran.
 - **Dengar** membaca teks semasa; **Jeda** menyambung klip yang sama; **Berhenti** menghentikan dan menetapkan semula bacaan.
 - Audio prasedia dimainkan daripada fail setempat/Cache Storage dan tidak memanggil `/api/tts`.
 - Hanya teks baharu yang tiada dalam peket/cache dihantar ke pelayan audio apabila Dengar ditekan. Jangan masukkan maklumat peribadi.
