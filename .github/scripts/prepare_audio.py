@@ -97,14 +97,16 @@ def main() -> None:
     if total_bytes != data["bytes"]:
         raise SystemExit(f"Jumlah bait tidak sepadan: {total_bytes} != {data['bytes']}")
 
-    message = f"Audio disahkan daripada {len(paths)} ZIP: {len(files)} klip, {total_bytes:,} bait, suara {data['voice']}"
+    voices = data.get("voices") or {"lalai": data.get("voice", "tidak dinyatakan")}
+    voice_label = ", ".join(f"{language}: {voice}" for language, voice in voices.items())
+    message = f"Audio disahkan daripada {len(paths)} ZIP: {len(files)} klip, {total_bytes:,} bait, {voice_label}"
     print(message)
     summary = os.environ.get("GITHUB_STEP_SUMMARY")
     if summary:
         with Path(summary).open("a", encoding="utf-8") as handle:
-            handle.write(f"### Audio Yasmin\n\n- {len(paths)} bahagian ZIP disahkan\n- {len(files)} klip lengkap\n- {total_bytes:,} bait\n- `{data['voice']}`\n")
+            voice_lines = "\n".join(f"- `{language}`: `{voice}`" for language, voice in voices.items())
+            handle.write(f"### Audio BM/English\n\n- {len(paths)} bahagian ZIP disahkan\n- {len(files)} klip lengkap\n- {total_bytes:,} bait\n{voice_lines}\n")
 
 
 if __name__ == "__main__":
     main()
-
