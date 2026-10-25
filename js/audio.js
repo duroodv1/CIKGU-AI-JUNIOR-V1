@@ -1,4 +1,7 @@
-export const YASMIN_VOICE = 'ms-MY-YasminNeural';
+import { MALAY_VOICE, ENGLISH_VOICE, speechVoiceForText } from './speech-language.js';
+
+export const YASMIN_VOICE = MALAY_VOICE;
+export { ENGLISH_VOICE, speechVoiceForText };
 export const YASMIN_RATE = '-8%';
 const AUDIO_CACHE = 'cikgu-yasmin-dynamic-v1';
 const DEFAULT_MESSAGE = 'Audio sedia untuk didengar.';
@@ -57,7 +60,7 @@ export function sha256Fallback(source) {
 }
 
 export async function cacheKey(text) {
-  const source = `${YASMIN_VOICE}\0${YASMIN_RATE}\0${text}`;
+  const source = `${speechVoiceForText(text)}\0${YASMIN_RATE}\0${text}`;
   if (globalThis.crypto?.subtle) {
     const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(source));
     return [...new Uint8Array(digest)].map(byte => byte.toString(16).padStart(2, '0')).join('');
@@ -113,7 +116,7 @@ export class SpeechAudioCache {
     try {
       const store = await caches.open(AUDIO_CACHE);
       await store.put(`https://audio.cikgu.local/${key}.mp3`, new Response(blob, {
-        headers: { 'Content-Type': 'audio/mpeg', 'X-TTS-Voice': YASMIN_VOICE }
+        headers: { 'Content-Type': 'audio/mpeg', 'X-TTS-Voice': speechVoiceForText(text) }
       }));
     } catch {
       // Salinan memori masih membolehkan audio digunakan dalam sesi ini.
@@ -130,9 +133,9 @@ export class SpeechAudioCache {
 function playbackError(error) {
   if (error?.name === 'AbortError') return 'Penjanaan audio diberhentikan.';
   if (globalThis.navigator?.onLine === false) return 'Audio untuk teks baharu memerlukan internet. Audio prasedia dalam peket luar talian dan audio yang pernah dijana masih boleh dimainkan.';
-  if (error?.status === 404) return 'Pelayan suara Yasmin belum tersedia pada alamat ini. Semak tetapan audio atau mulakan pelayan audio.';
+  if (error?.status === 404) return 'Pelayan suara belum tersedia pada alamat ini. Semak tetapan audio atau mulakan pelayan audio.';
   if (error?.status === 429) return 'Had permintaan audio dicapai. Tunggu sebentar dan cuba lagi.';
-  return 'Audio Yasmin tidak dapat dijana buat masa ini. Teks masih boleh dibaca pada skrin.';
+  return 'Audio tidak dapat dijana buat masa ini. Teks masih boleh dibaca pada skrin.';
 }
 
 export class SampleAudioPlayer {
@@ -147,7 +150,7 @@ export class SampleAudioPlayer {
     this.endpoint = endpoint;
     this.fetchImpl = fetchImpl || (typeof fetch === 'function' ? fetch.bind(globalThis) : null);
     this.cache = cache || new SpeechAudioCache();
-    this.objectURL = null;
+    this.objectURLs = [];
     this.abortController = null;
     this.requestId = 0;
     this.playlist = [];
@@ -163,7 +166,7 @@ export class SampleAudioPlayer {
       this.audio = factory(src);
       this.audio.preload = 'auto';
       this.audio.addEventListener('play', () => {
-        this._setState('playing', this.mode === 'text' ? 'Teks sedang dibaca menggunakan suara Yasmin.' : 'Sampel suara Yasmin sedang dimainkan.');
+        this._setState('playing', this.mode === 'text' ? 'Teks sedang dibaca dengan suara yang sepadan dengan bahasa.' : 'Sampel suara Yasmin sedang dimainkan.');
       });
       this.audio.addEventListener('pause', () => {
         if (this._stopping || this.status === 'idle' || this.status === 'loading' || this.audio.ended) return;
@@ -206,10 +209,12 @@ export class SampleAudioPlayer {
   }
 
   _revokeObjectURL() {
-    if (this.objectURL && typeof URL !== 'undefined') {
-      try { URL.revokeObjectURL(this.objectURL); } catch { /* URL mungkin sudah dilepaskan */ }
+    if (typeof URL !== 'undefined') {
+      for (const url of this.objectURLs) {
+        try { URL.revokeObjectURL(url); } catch { /* URL mungkin sudah dilepaskan */ }
+      }
     }
-    this.objectURL = null;
+    this.objectURLs = [];
   }
 
   async _playCurrent() {
@@ -217,7 +222,7 @@ export class SampleAudioPlayer {
     try {
       if (this.audio.ended) this.audio.currentTime = 0;
       await this.audio.play();
-      this._setState('playing', this.mode === 'text' ? 'Teks sedang dibaca menggunakan suara Yasmin.' : 'Sampel suara Yasmin sedang dimainkan.');
+      this._setState('playing', this.mode === 'text' ? 'Teks sedang dibaca dengan suara yang sepadan dengan bahasa.' : 'Sampel suara Yasmin sedang dimainkan.');
     } catch (error) {
       this._setState('idle', 'Audio tidak dapat dimainkan. Sila cuba lagi.');
       throw new Error('Audio tidak dapat dimainkan. Sila cuba lagi.', { cause: error });
@@ -250,10 +255,12 @@ export class SampleAudioPlayer {
     const requestId = ++this.requestId;
     this.mode = 'text';
     this.currentText = clean;
-    this._setState('loading', 'Suara Yasmin sedang disediakan untuk teks ini.');
+    this._setState('loading', 'Suara yang sepadan dengan bahasa sedang disediakan untuk teks ini.');
 
     try {
-      const offlineUrls = await offlineAudioUrls(segments || [clean]);
+      const requestedSegments = (segments || [clean]).map(segment => String(segment || '').replace(/\s+/g, ' ').trim()).filter(Boolean);
+      if (!requestedSegments.length) requestedSegments.push(clean);
+      const offlineUrls = await offlineAudioUrls(requestedSegments);
       if (requestId !== this.requestId) return;
       if (offlineUrls) {
         this._revokeObjectURL();
@@ -267,29 +274,46 @@ export class SampleAudioPlayer {
 
       this.playlist = [];
       this.playlistIndex = 0;
-      let blob = await this.cache.get(clean);
-      if (!blob) {
-        if (!this.fetchImpl) throw new Error('Fetch tidak disokong');
-        this.abortController = new AbortController();
-        const response = await this.fetchImpl(endpoint, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text: clean, voice: YASMIN_VOICE }),
-          signal: this.abortController.signal
-        });
-        if (!response.ok) {
-          const error = new Error(`HTTP ${response.status}`);
-          error.status = response.status;
-          throw error;
+      const dynamicURLs = [];
+      try {
+        for (const segment of requestedSegments) {
+          let blob = await this.cache.get(segment);
+          if (!blob) {
+            if (!this.fetchImpl) throw new Error('Fetch tidak disokong');
+            this.abortController = new AbortController();
+            const response = await this.fetchImpl(endpoint, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ text: segment, voice: speechVoiceForText(segment) }),
+              signal: this.abortController.signal
+            });
+            if (!response.ok) {
+              const error = new Error(`HTTP ${response.status}`);
+              error.status = response.status;
+              throw error;
+            }
+            blob = await response.blob();
+            if (!blob.size) throw new Error('Audio kosong diterima');
+            await this.cache.put(segment, blob);
+          }
+          if (requestId !== this.requestId) {
+            dynamicURLs.forEach(url => { try { URL.revokeObjectURL(url); } catch { /* abaikan */ } });
+            return;
+          }
+          dynamicURLs.push(URL.createObjectURL(blob));
         }
-        blob = await response.blob();
-        if (!blob.size) throw new Error('Audio kosong diterima');
-        await this.cache.put(clean, blob);
+      } catch (error) {
+        dynamicURLs.forEach(url => { try { URL.revokeObjectURL(url); } catch { /* abaikan */ } });
+        throw error;
       }
-      if (requestId !== this.requestId) return;
+      if (requestId !== this.requestId) {
+        dynamicURLs.forEach(url => { try { URL.revokeObjectURL(url); } catch { /* abaikan */ } });
+        return;
+      }
       this._revokeObjectURL();
-      this.objectURL = URL.createObjectURL(blob);
-      this.audio.src = this.objectURL;
+      this.objectURLs = dynamicURLs;
+      this.playlist = dynamicURLs;
+      this.audio.src = dynamicURLs[0];
       try { this.audio.load?.(); } catch { /* sebahagian pemain tidak memerlukan load() */ }
       await this._playCurrent();
     } catch (error) {

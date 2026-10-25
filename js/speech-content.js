@@ -1,17 +1,42 @@
 import { SUBJECTS } from './content.js';
 import { getSubjectQuestions } from './question-bank.js';
 import { makeTopicGuide, makePracticeGuide, answerLocally } from './teacher.js';
+import { detectSpeechLanguage, ENGLISH_LANGUAGE, splitSpeechText } from './speech-language.js';
 
 export const normalizeSpeechText = text => String(text || '').replace(/\s+/g, ' ').trim();
+const hasEnglish = segments => segments.some(text => detectSpeechLanguage(text) === ENGLISH_LANGUAGE);
+
+function bilingualSegments(text) {
+  const clean = normalizeSpeechText(text);
+  if (!clean) return [];
+  const parts = splitSpeechText(clean);
+  // Kekalkan segmentasi lama untuk kandungan BM supaya klip sedia ada boleh
+  // digunakan semula. Ayat English/campuran dipisahkan mengikut bahasa.
+  return hasEnglish(parts) ? parts : [clean];
+}
 
 export function noteSpeechSegments(topic) {
   if (!topic) return [];
-  return [[topic.title, topic.summary, ...topic.points, `Contoh: ${topic.example.text}`].join(' ')];
+  const original = [topic.title, topic.summary, ...topic.points, `Contoh: ${topic.example.text}`].join(' ');
+  const bilingual = [
+    ...splitSpeechText(topic.title),
+    ...splitSpeechText(topic.summary),
+    ...topic.points.flatMap(splitSpeechText),
+    'Contoh.',
+    ...splitSpeechText(topic.example.text)
+  ].map(normalizeSpeechText).filter(Boolean);
+  return hasEnglish(bilingual) ? bilingual : [normalizeSpeechText(original)];
 }
 
 export function questionSpeechSegments(question) {
   if (!question) return [];
-  return [[question.prompt, 'Pilihan jawapan.', ...question.options.map((option, index) => `${String.fromCharCode(65 + index)}. ${option}`)].join(' ')];
+  const original = [question.prompt, 'Pilihan jawapan.', ...question.options.map((option, index) => `${String.fromCharCode(65 + index)}. ${option}`)].join(' ');
+  const bilingual = [
+    ...splitSpeechText(question.prompt),
+    'Pilihan jawapan.',
+    ...question.options.flatMap((option, index) => splitSpeechText(`${String.fromCharCode(65 + index)}: ${option}`))
+  ].map(normalizeSpeechText).filter(Boolean);
+  return hasEnglish(bilingual) ? bilingual : [normalizeSpeechText(original)];
 }
 
 const SPOKEN_EQUIVALENTS = new Map([
@@ -26,7 +51,8 @@ export function spokenSpeechSegment(text) {
 }
 
 export function guideSpeechSegments(step) {
-  return step ? [spokenSpeechSegment(`${step.title}.`), spokenSpeechSegment(step.text)] : [];
+  if (!step) return [];
+  return [spokenSpeechSegment(`${step.title}.`), ...bilingualSegments(spokenSpeechSegment(step.text))].filter(Boolean);
 }
 
 export function speechTextFromSegments(segments) {
@@ -38,8 +64,8 @@ function addGuide(set, guide) {
 }
 
 /**
- * Senarai canonical bagi semua audio prasedia. Fail dinamakan menggunakan
- * SHA-256(voice + NUL + rate + NUL + teks), sama seperti cache audio dinamik.
+ * Senarai canonical bagi semua audio prasedia. Setiap teks diberi hash
+ * SHA-256(voice + NUL + rate + NUL + teks); suara dipilih oleh speech-language.js.
  */
 export function collectOfflineAudioSegments() {
   const segments = new Set();

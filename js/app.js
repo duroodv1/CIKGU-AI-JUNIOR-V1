@@ -296,7 +296,7 @@ async function playAudio(target) {
 
 function studentSettingsModal() {
   const toggle = (key, title, description) => `<div class="switch-row"><div><label id="student-${key}">${title}</label><p>${description}</p></div><button class="switch" role="switch" aria-checked="${state.settings[key]}" aria-labelledby="student-${key}" data-action="toggle-setting" data-setting="${key}"></button></div>`;
-  openModal(modalShell('Tetapan Paparan & Audio', `${toggle('voice', 'Bacaan suara Yasmin', 'Dengar membaca teks semasa menggunakan ms-MY-YasminNeural. Audio prasedia menggunakan peket tempatan; teks baharu memerlukan internet.')}${toggle('sound', 'Bunyi lembut', 'Bunyi maklum balas selepas jawapan.')}${toggle('calm', 'Mod tenang', 'Warna lebih lembut dan bunyi dimatikan.')}${toggle('reduceMotion', 'Kurangkan animasi', 'Hadkan pergerakan pada skrin.')}<div class="field" style="margin-top:18px"><label for="student-font">Saiz teks</label><select id="student-font" class="select" data-change="font"><option value="normal" ${state.settings.font === 'normal' ? 'selected' : ''}>Biasa</option><option value="large" ${state.settings.font === 'large' ? 'selected' : ''}>Besar</option><option value="larger" ${state.settings.font === 'larger' ? 'selected' : ''}>Lebih besar</option></select></div><div class="modal-actions"><button class="btn btn-primary" data-action="close-modal">Selesai</button></div>`, '⚙️'));
+  openModal(modalShell('Tetapan Paparan & Audio', `${toggle('voice', 'Bacaan suara dwibahasa', 'BM menggunakan ms-MY-YasminNeural dan English menggunakan en-GB-SoniaNeural. Audio prasedia menggunakan peket tempatan; teks baharu memerlukan internet.')}${toggle('sound', 'Bunyi lembut', 'Bunyi maklum balas selepas jawapan.')}${toggle('calm', 'Mod tenang', 'Warna lebih lembut dan bunyi dimatikan.')}${toggle('reduceMotion', 'Kurangkan animasi', 'Hadkan pergerakan pada skrin.')}<div class="field" style="margin-top:18px"><label for="student-font">Saiz teks</label><select id="student-font" class="select" data-change="font"><option value="normal" ${state.settings.font === 'normal' ? 'selected' : ''}>Biasa</option><option value="large" ${state.settings.font === 'large' ? 'selected' : ''}>Besar</option><option value="larger" ${state.settings.font === 'larger' ? 'selected' : ''}>Lebih besar</option></select></div><div class="modal-actions"><button class="btn btn-primary" data-action="close-modal">Selesai</button></div>`, '⚙️'));
 }
 
 function aiIsUsable() {
@@ -384,7 +384,7 @@ function applyAudioOfflineStatus(status, downloading = false) {
   ui.audioOfflineReady = Boolean(status.ready);
   ui.audioOfflineDownloading = downloading;
   ui.audioOfflineStatus = ui.audioOfflineReady
-    ? `${ui.audioOfflineTotal} klip Yasmin telah disimpan. Nota, soalan dan panduan prasedia boleh didengar tanpa internet.`
+    ? `${ui.audioOfflineTotal} klip audio BM/English telah disimpan. Nota, soalan dan panduan prasedia boleh didengar tanpa internet.`
     : `${ui.audioOfflineDone}/${ui.audioOfflineTotal} klip disimpan · ${audioSizeText(ui.audioOfflineBytes)}. Lengkapkan muat turun sebelum menutup internet. Teks baharu tetap memerlukan penjanaan dalam talian.`;
   updateAudioOfflinePanel();
 }
@@ -416,7 +416,7 @@ async function checkAudioOfflineCache() {
   ui.audioOfflineBytes = manifest.bytes || 0;
   if (location.protocol === 'file:') {
     applyAudioOfflineStatus({ done: ui.audioOfflineTotal, total: ui.audioOfflineTotal, bytes: ui.audioOfflineBytes, ready: ui.audioOfflineTotal > 0 });
-    if (ui.audioOfflineReady) ui.audioOfflineStatus = `${ui.audioOfflineTotal} klip Yasmin dibundel dalam aplikasi desktop dan boleh dimainkan serta-merta tanpa internet. Teks baharu masih memerlukan pelayan audio dalam talian.`;
+    if (ui.audioOfflineReady) ui.audioOfflineStatus = `${ui.audioOfflineTotal} klip audio BM/English dibundel dalam aplikasi desktop dan boleh dimainkan serta-merta tanpa internet. Teks baharu masih memerlukan pelayan audio dalam talian.`;
     updateAudioOfflinePanel();
     return;
   }

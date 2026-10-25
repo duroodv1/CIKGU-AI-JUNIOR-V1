@@ -41,11 +41,11 @@ export function audioAvailable(state) {
 
 export function audioButton(target = 'current') {
   const sample = target === 'settings';
-  const label = sample ? 'Pradengar Yasmin' : 'Bacaan Yasmin';
+  const label = sample ? 'Pradengar Yasmin' : 'Bacaan dwibahasa';
   const help = sample
     ? 'Ayat sampel sahaja · suara ms-MY-YasminNeural.'
-    : 'Membaca teks semasa · audio baharu memerlukan internet.';
-  return `<div class="audio-sample" data-audio-sample><div class="audio-sample-heading"><span class="audio-sample-label">${label}</span><span class="audio-status" data-audio-status>Sedia</span></div><div class="audio-controls" role="group" aria-label="Kawalan bacaan suara Yasmin"><button class="btn btn-soft btn-small" data-action="audio-play" data-audio-control="play" data-target="${attr(target)}" aria-label="${sample ? 'Dengar sampel suara Yasmin' : 'Dengar teks ini menggunakan suara Yasmin'}"><span aria-hidden="true">▶</span>Dengar</button><button class="btn btn-secondary btn-small" data-action="audio-pause" data-audio-control="pause" data-target="${attr(target)}" aria-label="Jeda audio" disabled><span aria-hidden="true">⏸</span>Jeda</button><button class="btn btn-secondary btn-small" data-action="audio-stop" data-audio-control="stop" data-target="${attr(target)}" aria-label="Berhenti dan kembali ke permulaan audio" disabled><span aria-hidden="true">■</span>Berhenti</button></div><small class="audio-sample-help">${help}</small></div>`;
+    : 'BM: Yasmin ms-MY · English: Sonia en-GB · audio baharu memerlukan internet.';
+  return `<div class="audio-sample" data-audio-sample><div class="audio-sample-heading"><span class="audio-sample-label">${label}</span><span class="audio-status" data-audio-status>Sedia</span></div><div class="audio-controls" role="group" aria-label="Kawalan bacaan suara dwibahasa"><button class="btn btn-soft btn-small" data-action="audio-play" data-audio-control="play" data-target="${attr(target)}" aria-label="${sample ? 'Dengar sampel suara Yasmin' : 'Dengar teks ini dengan suara yang sepadan dengan bahasa'}"><span aria-hidden="true">▶</span>Dengar</button><button class="btn btn-secondary btn-small" data-action="audio-pause" data-audio-control="pause" data-target="${attr(target)}" aria-label="Jeda audio" disabled><span aria-hidden="true">⏸</span>Jeda</button><button class="btn btn-secondary btn-small" data-action="audio-stop" data-audio-control="stop" data-target="${attr(target)}" aria-label="Berhenti dan kembali ke permulaan audio" disabled><span aria-hidden="true">■</span>Berhenti</button></div><small class="audio-sample-help">${help}</small></div>`;
 }
 
 export function ringPercent(value) {

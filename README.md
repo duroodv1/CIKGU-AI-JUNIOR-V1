@@ -58,7 +58,7 @@ Semak kelayakan Pages/Actions serta sebarang had atau caj mengikut pelan akaun a
    audio-v1
    ```
 
-3. Pilih sasaran `main` dan tajuk seperti `Audio Yasmin PWA`.
+3. Pilih sasaran `main` dan tajuk seperti `Audio BM dan English PWA`.
 4. Jika aset audio belum ada, skrol melepasi **Release notes** kepada kotak besar:
 
    > **Attach binaries by dropping them here or selecting them.**
@@ -83,7 +83,7 @@ Workflow akan:
 - memuat turun aset yang sepadan dengan `cikgu-yasmin-offline*.zip` daripada Release `audio-v1`;
 - memilih ZIP penuh jika sudah ada, atau memastikan keempat-empat bahagian tersedia;
 - menolak klip yang hilang, pendua, tambahan, rosak atau bukan MP3;
-- mengesahkan gabungan **3,296 klip** dan jumlah bait terhadap manifest; dan
+- mengesahkan gabungan **3,357 klip** dan jumlah bait terhadap manifest; dan
 - menerbitkan PWA serta audio ke GitHub Pages.
 
 Selepas semua langkah bertanda hijau, URL PWA tersedia dalam deployment atau **Settings → Pages**. Deployment sebenar belum dilakukan dalam pakej ini; ia berlaku dalam akaun GitHub anda.
@@ -92,7 +92,7 @@ Selepas semua langkah bertanda hijau, URL PWA tersedia dalam deployment atau **S
 
 1. Buka PWA dalam keadaan dalam talian.
 2. Masuk **Mod Ibu Bapa → Audio, Visual & Luar Talian**.
-3. Tekan **Sediakan Audio Luar Talian** dan tunggu sehingga **3,296/3,296** disahkan.
+3. Tekan **Sediakan Audio Luar Talian** dan tunggu sehingga **3,357/3,357** disahkan. Selepas kemas kini dwibahasa, ulangi muat turun walaupun peket lama pernah lengkap.
 4. Pasang PWA jika dikehendaki dan uji tanpa internet.
 
 Audio dimuat turun daripada GitHub Pages pada origin yang sama, bukan dijana oleh AI. Teks baharu atau jawapan AI masih memerlukan pelayan audio dalam talian yang berasingan.

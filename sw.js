@@ -1,6 +1,6 @@
 importScripts('./js/offline-audio-manifest.js');
 
-const VERSION = 'cikgu-ppki-v1.0.7';
+const VERSION = 'cikgu-ppki-v1.0.8';
 const CACHE = `shell-${VERSION}`;
 const AUDIO_CACHE = 'cikgu-yasmin-offline-v1';
 const AUDIO_MANIFEST = self.CIKGU_OFFLINE_AUDIO || { clips: [], total: 0, bytes: 0 };
@@ -13,6 +13,7 @@ const ASSETS = [
   './js/app.js',
   './js/audio.js',
   './js/offline-audio-manifest.js',
+  './js/speech-language.js',
   './js/speech-content.js',
   './js/content.js',
   './js/store.js',
@@ -92,6 +93,10 @@ async function downloadAudio() {
         await broadcast({ type: 'AUDIO_PROGRESS', done, total: AUDIO_URLS.length, bytes: AUDIO_MANIFEST.bytes || 0 });
       }
     }
+    // Buang audio daripada manifest lama hanya selepas semua klip baharu selamat.
+    const expected = new Set(AUDIO_URLS);
+    const stored = await cache.keys();
+    await Promise.all(stored.filter(request => !expected.has(request.url)).map(request => cache.delete(request)));
     return audioStatus();
   })();
   try {

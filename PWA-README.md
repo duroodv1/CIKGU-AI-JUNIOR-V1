@@ -1,6 +1,6 @@
 # CIKGU AI JUNIOR PPKI V.1 — PWA + Audio Luar Talian
 
-Pakej ini mengandungi aplikasi web statik, **3,296 klip MP3 prajana (mono, 24 kbps)** menggunakan `ms-MY-YasminNeural`, dan pelayan Python pilihan untuk menjana audio bagi teks baharu. Tiada API key disertakan.
+Pakej ini mengandungi aplikasi web statik, **3,357 klip MP3 prajana (mono, 24 kbps)** menggunakan `ms-MY-YasminNeural` untuk Bahasa Melayu dan `en-GB-SoniaNeural` untuk English, serta pelayan Python pilihan untuk menjana audio bagi teks baharu. Tiada API key disertakan.
 
 Kandungan merangkumi **7 subjek, 78 topik, 700 soalan dan 1,170 aktiviti**. Kemajuan disimpan pada peranti.
 
@@ -29,7 +29,7 @@ Pelayan statik seperti `python3 -m http.server 4173` juga memadai untuk kandunga
 1. Buka PWA melalui HTTPS atau localhost semasa dalam talian.
 2. Buka **Mod Ibu Bapa → Audio, Visual & Luar Talian**.
 3. Tekan **Sediakan Audio Luar Talian**. Saiz sebenar dipaparkan pada butang.
-4. Biarkan aplikasi terbuka sehingga status menyatakan bahawa semua **3,296/3,296 klip** telah disimpan.
+4. Biarkan aplikasi terbuka sehingga status menyatakan bahawa semua **3,357/3,357 klip** telah disimpan. Selepas kemas kini dwibahasa, ulangi langkah ini walaupun peket lama pernah dimuat turun; klip lapuk akan dibuang selepas peket baharu lengkap.
 5. Jika pelayar membenarkannya, tekan **Minta Storan Berterusan** untuk mengurangkan risiko cache dibuang.
 6. Pasang PWA melalui **Install app / Add to Home Screen**, kemudian buka semula dan uji dengan rangkaian dimatikan.
 
@@ -51,7 +51,7 @@ Selepas peket lengkap disimpan:
 
 ## Bacaan suara dan privasi
 
-- Suara: **`ms-MY-YasminNeural`**, kadar `-8%`.
+- Bahasa Melayu: **`ms-MY-YasminNeural`**; English (British): **`en-GB-SoniaNeural`**; kadar `-8%`. Suara dipilih mengikut bahasa setiap segmen, termasuk ayat campuran.
 - **Dengar** membaca teks semasa; **Jeda** menyambung klip yang sama; **Berhenti** menghentikan dan menetapkan semula bacaan.
 - Audio prasedia dimainkan daripada fail setempat/Cache Storage dan tidak memanggil `/api/tts`.
 - Hanya teks baharu yang tiada dalam peket/cache dihantar ke pelayan audio apabila Dengar ditekan. Jangan masukkan maklumat peribadi.
