@@ -2,14 +2,14 @@
 
 Kaedah ini untuk pengguna yang **tidak mahu menggunakan GitHub Desktop** dan menghadapi had **25 MB** semasa memuat naik audio.
 
-## Kemas kini 1.0.7 — Ringgit Malaysia dan Sen
+## Kemas kini 1.0.8 — Set Semula Kemajuan
 
 1. Muat naik kandungan `CIKGU-AI-PWA-GITHUB.zip` ke pangkal repositori dan commit, termasuk `.github`.
-2. Edit Release `audio-v1` dan gantikan aset `cikgu-yasmin-offline.zip` dengan ZIP baharu bernama sama. Jika menggunakan empat bahagian, gantikan kesemua empat.
+2. Jika aset `cikgu-yasmin-offline.zip` dalam Release `audio-v1` **sudah digantikan dengan audio 1.0.7**, kekalkannya—audio dan manifest tidak berubah dalam 1.0.8. Jika masih menggunakan audio 1.0.5/1.0.6, gantikan dengan ZIP audio baharu yang mempunyai nama sama.
 3. Buka **Actions → Terbit PWA dengan audio daripada Release → Run workflow**.
-4. Selepas deployment hijau, buka PWA, semak versi **1.0.7**, dan tekan **Sediakan Audio Luar Talian** dalam Tetapan.
+4. Selepas deployment hijau, buka PWA dan semak versi **1.0.8**. Menu baharu berada di **Tetapan → Kemajuan pembelajaran → Set semula kemajuan…**.
 
-Kod ringan dan ZIP audio mesti digantikan bersama kerana hash manifest berubah untuk 25 klip. Peranti yang mempunyai cache 1.0.5 hanya perlu mengambil **25 klip baharu**; 3,332 klip lain dikekalkan. Butiran teknikal berada dalam `KEMAS-KINI-RINGGIT-1.0.7.md`.
+Kod dan audio mesti sepadan. Peranti yang mempunyai cache 1.0.5 hanya perlu mengambil **25 klip baharu**; 3,332 klip lain dikekalkan. Butiran audio berada dalam `KEMAS-KINI-RINGGIT-1.0.7.md`. Set semula kemajuan tidak memadam cache audio.
 
 ## Fail yang digunakan
 

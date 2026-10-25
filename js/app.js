@@ -1,5 +1,5 @@
 import { SUBJECTS, LEVELS, GAMES, findSubject, findTopic } from './content.js';
-import { loadState, saveState, storageEstimate, requestPersistentStorage } from './store.js';
+import { loadState, saveState, storageEstimate, requestPersistentStorage, resetLearningProgress } from './store.js';
 import { makePracticeGuide, makeTopicGuide, answerLocally, askOnlineAI, testAIConnection, validateBackendUrl } from './teacher.js';
 import { getPracticeQuestions } from './question-bank.js';
 import { createTopicActivity, answerTopicActivity, retryTopicActivity, nextTopicActivity, pickActivitySequence, resetActivitySequence, checkActivitySequence, selectActivityMatch } from './activity-engine.js';
@@ -550,6 +550,32 @@ async function handleAction(action, data, element) {
       break;
     }
     case 'close-modal': closeModal(); break;
+    case 'confirm-reset-progress':
+      samplePlayer.stop();
+      openModal(modalShell('Set semula kemajuan?', '<p>Semua rekod latihan, topik, aktiviti dan permainan pada peranti ini akan dipadam. Tindakan ini tidak boleh diundur.</p><div class="notice warning"><span>ⓘ</span><p>Tetapan audio, paparan, AI dan peket audio luar talian akan dikekalkan.</p></div><div class="modal-actions"><button class="btn btn-secondary" data-action="close-modal">Batal</button><button class="btn btn-danger" data-action="reset-progress">Ya, set semula</button></div>', '↺'));
+      break;
+    case 'reset-progress': {
+      samplePlayer.stop();
+      clearTimeout(memoryTimer);
+      resetLearningProgress(state);
+      ui.subjectId = null;
+      ui.topicId = null;
+      ui.level = 1;
+      ui.lessonTab = 'notes';
+      ui.practice = freshPractice();
+      ui.practiceScope = 'topic';
+      ui.guide = null;
+      ui.guideStep = 0;
+      ui.game = null;
+      ui.activity = null;
+      ui.chat = initialChat();
+      closeModal();
+      await commit();
+      render();
+      announce('Kemajuan pembelajaran telah diset semula. Tetapan dan audio dikekalkan.');
+      toast('Kemajuan telah diset semula. Tetapan dan audio dikekalkan.');
+      break;
+    }
     case 'chat-suggestion': {
       const input = $('#chat-question'); if (input) { input.value = data.text; input.focus(); } break;
     }

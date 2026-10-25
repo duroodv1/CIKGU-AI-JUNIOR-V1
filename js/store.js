@@ -139,6 +139,13 @@ export async function saveState(state) {
   return savedToIdb;
 }
 
+export function resetLearningProgress(state) {
+  if (!state || typeof state !== 'object') throw new TypeError('Keadaan aplikasi tidak sah');
+  // Hanya kemajuan digantikan. Tetapan, AI, meta dan Cache Storage tidak disentuh.
+  state.progress = cloneDefault().progress;
+  return state;
+}
+
 export async function storageEstimate() {
   if (navigator.storage?.estimate) return navigator.storage.estimate();
   return { usage: 0, quota: 0 };

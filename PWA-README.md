@@ -2,9 +2,19 @@
 
 Pakej ini mengandungi aplikasi web statik, **3,357 klip MP3 prajana (mono, 24 kbps)** menggunakan `ms-MY-YasminNeural` untuk Bahasa Melayu dan `en-US-AriaNeural` untuk English, serta pelayan Python pilihan untuk menjana audio bagi teks baharu. Tiada API key disertakan.
 
-**Versi 1.0.7:** 25 klip Ringgit menggunakan rakaman pengguna—15 frasa “Ringgit Malaysia” dan 10 Ringgit berasingan. Rakaman “Sen” digunakan dalam 12 ayat berkaitan. Semua sisipan berurutan tanpa crossfade/pertindihan; 3,332 klip lain dikekalkan. Backend teks baharu menggunakan rakaman yang sama; lihat `KEMAS-KINI-RINGGIT-1.0.7.md` untuk langkah kemas kini.
+**Versi 1.0.8:** Tetapan kini mempunyai **Kemajuan pembelajaran → Set semula kemajuan…** dengan dialog pengesahan. Ia hanya memadam rekod latihan, topik, aktiviti dan permainan; tetapan, AI dan audio luar talian dikekalkan.
+
+**Audio kekal seperti 1.0.7:** 25 klip Ringgit menggunakan rakaman pengguna—15 frasa “Ringgit Malaysia” dan 10 Ringgit berasingan. Rakaman “Sen” digunakan dalam 12 ayat berkaitan. Semua sisipan berurutan tanpa crossfade/pertindihan; 3,332 klip lain dikekalkan. Backend teks baharu menggunakan rakaman yang sama; lihat `KEMAS-KINI-RINGGIT-1.0.7.md` untuk butiran audio.
 
 Kandungan merangkumi **7 subjek, 78 topik, 700 soalan dan 1,170 aktiviti**. Kemajuan disimpan pada peranti. Aplikasi kini mempunyai **satu Mod Murid**; Mod Ibu Bapa, PIN dan profil berbilang pengguna telah dibuang.
+
+## Set semula kemajuan
+
+1. Buka **Tetapan → Kemajuan pembelajaran**.
+2. Tekan **Set semula kemajuan…**.
+3. Semak dialog, kemudian pilih **Batal** atau **Ya, set semula**.
+
+Tindakan pengesahan memadam rekod latihan, topik, aktiviti, permainan dan topik terakhir. Ia tidak boleh diundur. Tetapan audio, paparan, AI dan peket audio luar talian tidak dipadam.
 
 ## Jalankan PWA
 
@@ -31,7 +41,7 @@ Pelayan statik seperti `python3 -m http.server 4173` juga memadai untuk kandunga
 1. Buka PWA melalui HTTPS atau localhost semasa dalam talian.
 2. Buka **Tetapan → Ketersediaan luar talian & storan**.
 3. Tekan **Sediakan Audio Luar Talian**. Saiz sebenar dipaparkan pada butang.
-4. Biarkan aplikasi terbuka sehingga status menyatakan bahawa semua **3,357/3,357 klip** telah disimpan. Selepas kemas kini audio, ulangi langkah ini walaupun peket lama pernah dimuat turun; klip lapuk akan dibuang selepas peket baharu lengkap. Bagi kemas kini ke 1.0.7, hanya **25 URL berkaitan Ringgit** berubah dan perlu dimuat turun semula.
+4. Biarkan aplikasi terbuka sehingga status menyatakan bahawa semua **3,357/3,357 klip** telah disimpan. Selepas kemas kini audio, ulangi langkah ini walaupun peket lama pernah dimuat turun; klip lapuk akan dibuang selepas peket baharu lengkap. Bagi audio 1.0.7/1.0.8 berbanding 1.0.5, hanya **25 URL berkaitan Ringgit** berubah dan perlu dimuat turun semula.
 5. Jika pelayar membenarkannya, tekan **Minta Storan Berterusan** untuk mengurangkan risiko cache dibuang.
 6. Pasang PWA melalui **Install app / Add to Home Screen**, kemudian buka semula dan uji dengan rangkaian dimatikan.
 
