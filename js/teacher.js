@@ -109,39 +109,17 @@ function localQuestionGuide(text, topic) {
     return {
       source: 'nota-berpandu',
       notice: 'Mod tanpa AI menggunakan nota prasedia. Untuk soalan baharu yang berbeza, semak semula bersama ibu bapa atau gunakan AI dalam talian yang telah diuji.',
-     steps: [
-  {
-    title: "Langkah 1",
-    text: "Baca soalan dengan teliti.",
-    visual: "",
-    final: false,
-    tryThis: false
-  },
-  {
-    title: "Langkah 2",
-    text: "Fahami maklumat yang diberikan.",
-    visual: "",
-    final: false,
-    tryThis: false
-  },
-  {
-    title: "Langkah 3",
-    text: "Ikuti penerangan yang diberikan oleh Cikgu AI.",
-    visual: "",
-    final: false,
-    tryThis: false
-  },
-  {
-    title: "Langkah 4",
-    text: "Cuba jawab soalan latihan sendiri.",
-    visual: "",
-    final: true,
-    tryThis: true
+      steps: [
+        { title: 'Fahami soalan', text: `Soalan kamu: “${short(text, 300)}”\n\nMari gunakan nota topik ${topic.title} sebagai panduan.` },
+        { title: 'Maklumat berkaitan', text: topic.summary, visual: topic.points[0] },
+        { title: 'Lihat contoh', text: topic.example.text, visual: topic.example.visual },
+        { title: 'Semak bersama', text: `Bandingkan soalan dengan contoh. ${topic.points[1]}` },
+        { title: 'Cuba sendiri', text: topic.alt.prompt, visual: topic.alt.visual, tryThis: true }
+      ]
+    };
   }
-],
-
   return null;
-});
+}
 
 export function answerLocally(text, topic) {
   const guide = localQuestionGuide(text, topic);
