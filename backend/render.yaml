@@ -1,0 +1,27 @@
+# Blueprint Render untuk backend CIKGU AI JUNIOR PPKI V.1.
+# JANGAN tulis API key dalam fail ini. Tambah key melalui Environment → Environment Variables.
+services:
+  - type: web
+    name: cikgu-ai-junior-ppki-backend
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: 22.20.0
+      - key: HOST
+        value: 0.0.0.0
+      - key: ALLOWED_ORIGINS
+        sync: false
+      - key: TRUST_PROXY
+        value: "true"
+      - key: ALLOW_SERVER_CLIENTS
+        value: "false"
+      - key: ALLOW_NULL_ORIGIN
+        value: "false"
+      - key: RATE_LIMIT_PER_15_MIN
+        value: "60"
+      - key: AI_DAILY_LIMIT_PER_IP
+        value: "40"
