@@ -1,6 +1,6 @@
 importScripts('./js/offline-audio-manifest.js');
 
-const VERSION = 'cikgu-ppki-v1.1.1';
+const VERSION = 'cikgu-ppki-v1.1.2';
 const CACHE = `shell-${VERSION}`;
 const AUDIO_CACHE = 'cikgu-yasmin-offline-v1';
 const AUDIO_MANIFEST = self.CIKGU_OFFLINE_AUDIO || { clips: [], total: 0, bytes: 0 };

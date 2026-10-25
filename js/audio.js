@@ -3,7 +3,7 @@ import { MALAY_VOICE, ENGLISH_VOICE, speechVoiceForText } from './speech-languag
 export const YASMIN_VOICE = MALAY_VOICE;
 export { ENGLISH_VOICE, speechVoiceForText };
 export const YASMIN_RATE = '-8%';
-export const RINGGIT_AUDIO_REVISION = 'user-rm-20261025-v1';
+export const RINGGIT_AUDIO_REVISION = 'user-rm-sen-20261025-v2';
 const RINGGIT_PATTERN = /\bringgit\b/i;
 const AUDIO_CACHE = 'cikgu-yasmin-dynamic-v1';
 const DEFAULT_MESSAGE = 'Audio sedia untuk didengar.';
