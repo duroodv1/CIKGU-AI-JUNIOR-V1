@@ -2,6 +2,15 @@
 
 Kaedah ini untuk pengguna yang **tidak mahu menggunakan GitHub Desktop** dan menghadapi had **25 MB** semasa memuat naik audio.
 
+## Kemas kini 1.0.6 — Ringgit
+
+1. Muat naik kandungan `CIKGU-AI-PWA-GITHUB.zip` ke pangkal repositori dan commit, termasuk `.github`.
+2. Edit Release `audio-v1` dan gantikan aset `cikgu-yasmin-offline.zip` dengan ZIP baharu bernama sama. Jika menggunakan empat bahagian, gantikan kesemua empat.
+3. Buka **Actions → Terbit PWA dengan audio daripada Release → Run workflow**.
+4. Selepas deployment hijau, buka PWA, semak versi **1.0.6**, dan tekan **Sediakan Audio Luar Talian** dalam Tetapan.
+
+Kod ringan dan ZIP audio mesti digantikan bersama kerana hash manifest berubah untuk 25 klip. Peranti yang mempunyai cache 1.0.5 hanya perlu mengambil **25 klip baharu**; 3,332 klip lain dikekalkan. Butiran teknikal berada dalam `KEMAS-KINI-RINGGIT-1.0.6.md`.
+
 ## Fail yang digunakan
 
 - `CIKGU-AI-PWA-GITHUB.zip` — kod ringan dan workflow, tanpa MP3 offline.

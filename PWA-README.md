@@ -2,6 +2,8 @@
 
 Pakej ini mengandungi aplikasi web statik, **3,357 klip MP3 prajana (mono, 24 kbps)** menggunakan `ms-MY-YasminNeural` untuk Bahasa Melayu dan `en-US-AriaNeural` untuk English, serta pelayan Python pilihan untuk menjana audio bagi teks baharu. Tiada API key disertakan.
 
+**Versi 1.0.6:** sebutan `ringgit` dalam 25 klip menggunakan rakaman yang diberikan pengguna. Sebanyak 3,332 klip lain dikekalkan. Backend teks baharu menggunakan rakaman yang sama; lihat `KEMAS-KINI-RINGGIT-1.0.6.md` untuk langkah kemas kini.
+
 Kandungan merangkumi **7 subjek, 78 topik, 700 soalan dan 1,170 aktiviti**. Kemajuan disimpan pada peranti. Aplikasi kini mempunyai **satu Mod Murid**; Mod Ibu Bapa, PIN dan profil berbilang pengguna telah dibuang.
 
 ## Jalankan PWA
@@ -29,7 +31,7 @@ Pelayan statik seperti `python3 -m http.server 4173` juga memadai untuk kandunga
 1. Buka PWA melalui HTTPS atau localhost semasa dalam talian.
 2. Buka **Tetapan → Ketersediaan luar talian & storan**.
 3. Tekan **Sediakan Audio Luar Talian**. Saiz sebenar dipaparkan pada butang.
-4. Biarkan aplikasi terbuka sehingga status menyatakan bahawa semua **3,357/3,357 klip** telah disimpan. Selepas kemas kini dwibahasa, ulangi langkah ini walaupun peket lama pernah dimuat turun; klip lapuk akan dibuang selepas peket baharu lengkap.
+4. Biarkan aplikasi terbuka sehingga status menyatakan bahawa semua **3,357/3,357 klip** telah disimpan. Selepas kemas kini audio, ulangi langkah ini walaupun peket lama pernah dimuat turun; klip lapuk akan dibuang selepas peket baharu lengkap. Bagi kemas kini 1.0.5 → 1.0.6, hanya **25 URL Ringgit** berubah dan perlu dimuat turun semula.
 5. Jika pelayar membenarkannya, tekan **Minta Storan Berterusan** untuk mengurangkan risiko cache dibuang.
 6. Pasang PWA melalui **Install app / Add to Home Screen**, kemudian buka semula dan uji dengan rangkaian dimatikan.
 
@@ -52,6 +54,7 @@ Selepas peket lengkap disimpan:
 ## Bacaan suara dan privasi
 
 - Bahasa Melayu: **`ms-MY-YasminNeural`**; English (Amerika Syarikat): **`en-US-AriaNeural`**; kadar `-8%`. Suara dipilih mengikut bahasa setiap segmen, termasuk ayat campuran.
+- Perkataan **ringgit** menggunakan rakaman pengguna dalam 25 klip prasedia dan dalam backend teks baharu yang telah dikemas kini.
 - **Dengar** membaca teks semasa; **Jeda** menyambung klip yang sama; **Berhenti** menghentikan dan menetapkan semula bacaan.
 - Audio prasedia dimainkan daripada fail setempat/Cache Storage dan tidak memanggil `/api/tts`.
 - Hanya teks baharu yang tiada dalam peket/cache dihantar ke pelayan audio apabila Dengar ditekan. Jangan masukkan maklumat peribadi.

@@ -3,6 +3,8 @@ import { MALAY_VOICE, ENGLISH_VOICE, speechVoiceForText } from './speech-languag
 export const YASMIN_VOICE = MALAY_VOICE;
 export { ENGLISH_VOICE, speechVoiceForText };
 export const YASMIN_RATE = '-8%';
+export const RINGGIT_AUDIO_REVISION = 'user-rm-20261025-v1';
+const RINGGIT_PATTERN = /\bringgit\b/i;
 const AUDIO_CACHE = 'cikgu-yasmin-dynamic-v1';
 const DEFAULT_MESSAGE = 'Audio sedia untuk didengar.';
 
@@ -60,7 +62,8 @@ export function sha256Fallback(source) {
 }
 
 export async function cacheKey(text) {
-  const source = `${speechVoiceForText(text)}\0${YASMIN_RATE}\0${text}`;
+  const revision = RINGGIT_PATTERN.test(String(text || '')) ? `${RINGGIT_AUDIO_REVISION}\0` : '';
+  const source = `${speechVoiceForText(text)}\0${YASMIN_RATE}\0${revision}${text}`;
   if (globalThis.crypto?.subtle) {
     const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(source));
     return [...new Uint8Array(digest)].map(byte => byte.toString(16).padStart(2, '0')).join('');
