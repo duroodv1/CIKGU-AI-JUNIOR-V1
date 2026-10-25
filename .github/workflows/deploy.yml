@@ -36,8 +36,10 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: gh release download "$AUDIO_RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --pattern "$AUDIO_ASSET_PATTERN" --dir "$RUNNER_TEMP/cikgu-audio"
 
-      - name: Sahkan dan sediakan audio Release
-        run: python3 .github/scripts/prepare_audio.py "$RUNNER_TEMP/cikgu-audio" --root .
+       - name: Sahkan dan sediakan audio Release
+        run: |
+          rm -rf assets/audio/offline
+          python3 .github/scripts/prepare_audio.py "$RUNNER_TEMP/cikgu-audio" --root .
 
       - name: Sediakan fail statik Pages
         run: |
